@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force go-crond .
+mise cache clear
+mise install go-crond@23.12.0
+
+# Capture and display the output while also verifying it
+output=$(mise exec "go-crond@23.12.0" -- "go-crond" --version)
+echo "go-crond output: ${output}"
+
+if echo "${output}" | grep -q '23.12.0'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version go-crond@23.12.0"
+  exit 1
+fi
